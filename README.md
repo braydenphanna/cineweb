@@ -10,7 +10,7 @@ pip install flask requests
 ```shell
 python3 ./server.py
 ```
-4. [Click here](http://127.0.0.1:5000) to access the site
+4. [Click here](http://127.0.0.1:8000) to access the site
 ## Objectives
 ### Scripts
 - [x] Create function(s) to interface with [TMDB API](https://developer.themoviedb.org/docs/getting-started) (use /search -> /recommendations; will output a specified amount of recommended movies in a json file)
@@ -25,11 +25,12 @@ python3 ./server.py
 - [x] Basic flask setup with working connectivity
 - [X] Display the recommendation web with movie posters from TMDB 
 - [X] Hover over to see movie details preview?
+- [X] Add more info to side menu (add director, cast, imdb) 
 - [ ] Zoom into a movie when selected
-- [ ] Complete the movie info side menu when (add director, cast, etc.) 
 - [ ] Give graph labeled edges (denoting similarity)
 - [ ] Offer suggested searches while entering your starting movie
 - [ ] Add option to input API key on the website
+- [ ] Make everyting look more appealing (change colors, fonts, etc.)
 
 
 ## Tech Stack
