@@ -1,9 +1,9 @@
 # Movie Recommendation
-A lightweight python application that employs a graph data structure to generate a web of movie recommendations based on your last watch.
+A web-based application that employs graph data structures to generate a web of movie recommendations based on your last watch.
 ## Usage
 1. Install the required python libraries
 ```shell
-pip install flask requests
+pip install flask
 ```
 2. Start the server
 ```shell
@@ -30,8 +30,9 @@ python3 ./server.py
 - [X] Zoom into a movie when selected
 - [X] Give graph labeled edges (denoting similarity)
 - [X] Add option to input API key on the website
+- [X] Make everyting look more appealing (change colors, fonts, etc.)
+- [ ] Do finishing visual touches (adjust various minor details such as API Key button)
 - [ ] Offer suggested searches while entering your starting movie
-- [ ] Make everyting look more appealing (change colors, fonts, etc.)
 
 ## Tech Stack
 ### Frontend

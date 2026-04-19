@@ -1,21 +1,116 @@
+html * {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
 html, body {
     height: 100%;
     margin: 0;
+    background-color: #14181c;
+    color: #eef0f2;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
 }
 
 #header {
+    display: inline;
+    gap: 20px;
+    padding: 10px;
+}
+
+#main {
+    flex: 1;
+    display: flex;
+    background-color: #20262E;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    gap: 20px;
+}
+
+#search-container * {
+    font-size: 30px;
+}
+
+#search-container {
+    font-size: 30px;
+    width: 40%;
+    display: flex;       
+}
+
+#search-bar {
+    flex: 1;             
+    width: 100%;    
+    border: 1px solid #2c3440; 
+    border-radius: 5px;
+    box-sizing: border-box;   
+}
+
+#r-header {
     display: flex;
     align-items: center;
-    gap: 20px; 
+    gap: 20px;
+    padding: 10px;
 }
-#main{
-    height: 100%;
-    margin: 0;
+
+#r-main {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;       
+    height: 100%;        
+    gap: 5px;
+    position: relative;
+    min-height: 0;  
+
+    background-color: #20262E;
 }
 
 #mynetwork {
-    width: 80%;
-    height: 80%;
-    border: 1px solid lightgray;
+    flex: 1;
+    width: 100%;
+    margin: 5px; 
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 5px;
+    top: 0;
+    left: 0;
 }
 
+#movieInfo {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    bottom: 5px;
+    width: 20%;
+
+    border: 1px solid #34495e;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #14181c;
+
+    overflow-y: auto;
+
+    transform: translateX(105%);
+    transition: transform 0.4s ease;
+}
+
+#movieInfo.active {
+    transform: translateX(0);
+}
+
+.footer {
+    background-color: #2c3440;
+    color: lightgray;
+    padding: 10px 0;
+    text-align: center;
+    font-size: 15px;
+    border-top: 1px solid #34495e;
+}
+
+a {
+  text-decoration: underline;
+    color: #eef0f2;
+}

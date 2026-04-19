@@ -9,9 +9,9 @@
 
     </head>
     <body>
-        <div id="header" style="display:flex">
+        <div id="r-header">
             <form action="/">
-                <input type="submit" value="<-" />
+                <input type="submit" value="<" />
             </form>
             <h1>Recommendations</h1>
             <div>
@@ -19,9 +19,9 @@
                 <label for="weightToggle">Show weights</label>
             </div>
         </div>
-        <div id="main" style="display:flex">
+        <div id="r-main">
             <div id="mynetwork"></div>
-            <div style="display: none; width: 20%" id="movieInfo" data-movie="">
+            <div id="movieInfo" data-movie="">
                 <label id="movieTitle">Title:</label><br>
                 <label id="movieReleaseDate">Release Date:</label><br>
                 <label id="movieOverview">Overview:</label><br>
@@ -96,7 +96,7 @@
                 nodes: {
                     color: {
                         
-                        border: '#2B7CE9'
+                        border: '#eef0f2'
                     },
                     shapeProperties: {
                         useBorderWithImage: true
@@ -132,20 +132,21 @@
 
                     // Zoom in on select
                     network.focus(nodeId, {
-                        scale: 8,
+                        scale: 9,
                         animation: { duration: 500 }
                     });
 
                     // Hide any old movie info while new info is loading
                     movieInfo = document.getElementById("movieInfo");
-                    movieInfo.style.display="none";
+                    movieInfo.classList.remove("active");
 
                     fetch("/moreinfo/"+clickedNodeData.json['id'])
                     .then(response => response.json()) // Parse JSON response
                     .then(data => {
                         console.log(data); // Access data from Python
 
-                        movieInfo.style.display="inline";
+                        movieInfo.classList.add("active");
+                        
                         movieTitle = document.getElementById("movieTitle");
                         movieTitle.innerHTML = "<b>Title:</b> "+clickedNodeData.json["title"]
                         movieReleaseDate = document.getElementById("movieReleaseDate");
@@ -161,16 +162,16 @@
 
                         movieIMDB = document.getElementById("movieIMDB");
                         movieIMDB.innerHTML = "<a href='"+data["imdb"]+"' target='_blank'>IMDB</a>";
-
                     })
                     .catch(error => console.error('Error:', error));
                 }
             });
+            
             network.on('deselectNode', function (params) {
                 // Zoom out on deselect
                 if (network.getSelectedNodes().length === 0) {
                     network.fit({ animation: { duration: 500 } });
-                    movieInfo.style.display="none";
+                    movieInfo.classList.remove("active");
                 }
             });
 
