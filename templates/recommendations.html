@@ -2,18 +2,16 @@
 
 <html>
     <head>
-        <title>Movie Recommendation</title> 
+        <title>CineWeb</title> 
         <meta charset=utf-8> 
         <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
     </head>
     <body>
         <div id="r-header">
-            <form action="/">
-                <input type="submit" value="<" />
-            </form>
-            <h1>Recommendations</h1>
+            <h1 style = "margin-left: 1%;"><a style = "text-decoration: none;" href="/">&#x1F578;&#xFE0E; CineWeb</a></h1>
             <div>
                 <input type="checkbox" id="weightToggle">
                 <label for="weightToggle">Show weights</label>
@@ -187,7 +185,6 @@
                     }
                 });
             });
-
         </script>
     </body>
 </html>

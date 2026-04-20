@@ -2,15 +2,16 @@
 
 <html>
     <head>
-        <title>Movie Recommendation</title> 
+        <title>CineWeb</title> 
         <meta charset=utf-8> 
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     </head>
     <body>
         <div id="header">
             <input type="submit" id="apiKeyButton" value="API Key" style="float: right; margin-right: 1%;" />
             <label style = "float: right; margin-right: 1%; display: none;" id="submittedText">Valid API Key</label>
-            <h1 style = "margin-left: 1%; "">&#x1F578;&#xFE0E; CineWeb</h1>
+            <h1 style = "margin-left: 1%;"><a style = "text-decoration: none;" href="/">&#x1F578;&#xFE0E; CineWeb</a></h1>
         </div>
         <div id="main">
             <label>Enter a movie that you <u>enjoyed</u>.</label>
@@ -20,24 +21,41 @@
             <div style="height: 25%"></div>
         </div>
 
-        <dialog id="settingsPopup">
-            <form action="/setapikey/" method="POST">
-                <label for="textInput">Enter API Key:</label>
-                <input type="text" id="textInput" name="apikey">
-                <button type="submit" formmethod="dialog">Cancel</button>
-                <button type="submit" id="confirmApiKey">Submit</button>
+        <dialog id="popup">
+            <form method="dialog">
+                <input type="submit" id ="popupOk" value="Ok"/>
+                <label id ="popupText"></label>
             </form>
         </dialog>
-    <footer class="footer">
-            Website by <a href="https://github.com/braydenphanna/">Brayden Hanna</a> & <a href="https://github.com/Andrew-13-0">Andrew Mayak</a>. Powered by <a href="https://www.themoviedb.org">TMDB</a>.
-    </footer>
+
+        <dialog id="settingsPopup">
+            <form action="/setapikey/" method="POST">
+                <input type="text" id="popupTextInput" name="apikey">
+                <label for="textInput">Enter API Key:</label>
+            </form>
+        </dialog>
+        <footer class="footer">
+                Website by <a href="https://github.com/braydenphanna/">Brayden Hanna</a> & <a href="https://github.com/Andrew-13-0">Andrew Mayak</a>. Powered by <a href="https://www.themoviedb.org">TMDB</a>.
+        </footer>
         <script>
             {% if valid is true%}
                 document.getElementById('apiKeyButton').style.display = "none";
                 document.getElementById('submittedText').style.display = "flex";
             {% endif %}
-            dialog = document.getElementById('settingsPopup');
-            document.getElementById('apiKeyButton').onclick = () => dialog.showModal();
+            {% if error == "Empty Query"%}
+                popup = document.getElementById('popup');
+                popupText = document.getElementById('popupText');
+                popup.showModal();
+                popupText.innerHTML = "Empty Query"
+            {% endif %}
+            {% if error == "Invalid API Key"%}
+                popup = document.getElementById('popup');
+                popupText = document.getElementById('popupText');
+                popup.showModal();
+                popupText.innerText = "Invalid API Key";
+            {% endif %}
+            apiDialog = document.getElementById('settingsPopup');
+            document.getElementById('apiKeyButton').onclick = () => apiDialog.showModal();
         </script>
     </body>
 </html>

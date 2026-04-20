@@ -111,6 +111,52 @@ body {
 }
 
 a {
-  text-decoration: underline;
+    text-decoration: underline;
+    color: #eef0f2;
+}
+
+h1 a {
+    text-decoration: none;
+}
+
+dialog {
+    width: 30%;
+    height: 25%;
+    border: 1px solid #2c3440;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #14181c;
+    color: #eef0f2;
+    font-size: 30px;
+    padding:10px;
+}
+dialog form{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    gap: 20%;
+    flex-direction: column-reverse;
+}
+
+#popupOk {
+    width:100%;
+    height:25%;
+} 
+#popupTextInput{
+    width:100%;
+    height:25%;
+    border: 1px solid #2c3440; 
+    border-radius: 5px;
+    box-sizing: border-box;   
+    font-size: 20px;
+}
+input[type="submit"]{
+    border: 1px solid #2c3440;
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding:10px;
+    font-size: 20px;
+    background-color: #20262E;
     color: #eef0f2;
 }

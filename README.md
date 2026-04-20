@@ -1,4 +1,4 @@
-# Movie Recommendation
+# &#x1F578;&#xFE0E; CineWeb
 A web-based application that employs graph data structures to generate a web of movie recommendations based on your last watch.
 ## Usage
 1. Install the required python libraries

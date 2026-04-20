@@ -7,9 +7,9 @@ app = Flask(__name__)
 
 recommendations = []
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    return render_template('index.html', valid=api.test_key(api.api_key))
 
 @app.route('/recommendations/', methods=['GET', 'POST'])
 def recommend():
@@ -18,7 +18,10 @@ def recommend():
     query = request.values.get('query')
 
     if not query:
-        return "Missing query parameter", 400
+        return render_template('index.html', valid=api.test_key(api.api_key), error="Empty Query")
+
+    if not api.test_key(api.api_key):
+        return render_template('index.html', valid=api.test_key(api.api_key), error="Invalid API Key")
 
     recommendations = api.get_recommendations(query, 15)
     return render_template('recommendations.html', recommendations=recommendations)
@@ -39,6 +42,6 @@ def set_api_key():
     valid=api.test_key(key)
     if(valid):api.set_key(key)
     return render_template('index.html', valid=valid)
-    
+
 if __name__ == '__main__':
     app.run(debug=True,port=8000)
