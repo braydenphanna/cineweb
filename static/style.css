@@ -110,6 +110,9 @@ body {
 }
 
 #movieInfo {
+    display: flex;
+    flex-direction: column;
+
     position: absolute;
     top: 5px;
     right: 5px;
@@ -269,4 +272,37 @@ input[type="submit"]{
     display:flex; 
     gap:0.5%;
     overflow-x: scroll;
+}
+#spacer{
+    flex-grow: 1;
+}
+hr { 
+    border: none;
+}
+.ratings {
+    display: flex;
+    flex-direction: row;
+}
+.rating {
+    padding: 10px;
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #2c3440;
+    background-color: #20262E;
+    box-sizing: border-box;
+    flex: 1; 
+}
+
+#likeButton:checked ~ .ratings label[for="likeButton"],
+#neutralButton:checked ~ .ratings label[for="neutralButton"],
+#dislikeButton:checked ~ .ratings label[for="dislikeButton"] {
+  background-color: #14181c;
+}
+
+#likeButton{
+    border-radius: 5px 0px 0px 5px;
+}
+#dislikeButton{
+    border-radius: 0px 5px 5px 0px;
 }

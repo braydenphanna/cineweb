@@ -39,9 +39,7 @@ def search(name):
 
 @app.route('/getsimilarity/<id1>/<id2>')
 def get_similarity(id1,id2):
-    print(id1)
-    print(id2)
-    return algorithms.get_similarity(recommendations[int(id1)],recommendations[int(id2)])
+    return algorithms.get_similarity(Movie.from_json(api.get_raw_details(id1)),Movie.from_json(api.get_raw_details(id2)))
 
 @app.route('/setapikey/', methods=['GET', 'POST'])
 def set_api_key():

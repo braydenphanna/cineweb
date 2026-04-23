@@ -55,6 +55,18 @@ def get_more_info(query):
 
     return extra_info
 
+cache = {}
+
+def get_raw_details(id):
+    if id in cache:
+        return cache[id]
+
+    url = f"https://api.themoviedb.org/3/movie/{id}?language=en-US"
+    details = requests.get(url, headers=headers).json()
+
+    cache[id] = details
+    return details
+
 def search(query):
     url = f"https://api.themoviedb.org/3/search/movie?query={query}&include_adult=false&language=en-US&page=1"
     data = requests.get(url, headers=headers).json()

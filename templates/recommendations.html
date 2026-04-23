@@ -7,7 +7,6 @@
         <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-
     </head>
     <body>
         <div id="r-header">
@@ -24,9 +23,9 @@
                     <label style="font-weight:bold; font-size: 40px;" id="movieTitle"></label><br>
                     <label style="font-weight:bold; font-size: 20px; color:lightgray" id="movieReleaseDate"></label>
                     <label style="color:lightgray" id="movieDirector">Directed by</label>
-                </center><br>
+                </center><hr>
                 <label style="color:lightgray; font-weight:bold;" id="movieTagline"></label>
-                <label style="color:lightgray" id="movieOverview"></label><br><br>
+                <label style="color:lightgray" id="movieOverview"></label><br><br><hr>
                 <div>
                     <input type="radio" name="tabs" id="cast" checked>
                     <input type="radio" name="tabs" id="crew">
@@ -54,9 +53,14 @@
                         <label id="movieIMDB">IMDB</label><br>
                     </div>
                 </div>
-                <div>
-                    <input type="submit" id ="likeButton" value="👍"/>
-                    <input type="submit" id ="dislikeButton" value="👎"/>
+                <div id="spacer"></div>
+                <input type="radio" name="ratings" id="likeButton" value="like">
+                <input type="radio" name="ratings" id="neutralButton" value="neutral" checked>
+                <input type="radio" name="ratings" id="dislikeButton" value="dislike">
+                <div class ="ratings">
+                    <label class="rating" for ="likeButton">Like</label>
+                    <label class="rating" for ="neutralButton">/</label>
+                    <label class="rating" for ="dislikeButton">Dislike</label>
                 </div>
             </div>
         </div>
@@ -67,10 +71,8 @@
          It looks like we can modify the options later to adjust the physics and appearance of the graph.
           -->
         <script type="text/javascript">
-            // Net node and edge amounts
+            // Net node
             netNodes=0;
-            netEdges=0;
-            blacklist = [];
 
             // Create an array with nodes
             var nodes = new vis.DataSet([
@@ -86,7 +88,7 @@
 
                         // All of the extra movie info
                         json: {{ movie.to_dict() | tojson }},
-                        
+                        rating: "neutral",
                         // These attributes set the nodes' form to their movie poster
                         shape: 'image', 
                         image: "https://image.tmdb.org/t/p/original{{ movie.poster_path }}" 
@@ -94,31 +96,33 @@
                     }{% if not loop.last %},{% endif %}
                 {% endfor %}
             ]);
+            nodes.get(0).rating="like"
+            nodes.update({
+                    id: 0,
+                    borderWidth: 2,
+                    color: {
+                        border: '#008000',
+                        highlight:{
+                            border: '#008000'
+                        }
+                    }
+            });
             netNodes+=nodes.length;
 
             var edges = new vis.DataSet([]);
 
             for (let i = 1; i <= 10; i++) {
+                const edgeId = makeEdgeId(0, nodes.get(i).id);
+
                 edges.add({
-                    id: i,
+                    id: edgeId,
                     from: 0,
-                    to: i,
+                    to: nodes.get(i).id,
                     value: 1
                 });
-                netEdges++;
             }
 
-            // Fetch similarity and update edges
-            for (let i = 1; i <= edges.length; i++) {
-                fetch(`/getsimilarity/0/${i}`)
-                .then(r => r.json())
-                .then(data => {
-                    edges.update({
-                        id: i,
-                        label: (data.toFixed(2) * 100) + "%"
-                    });
-                });
-            }   
+
             // Create a network
             var container = document.getElementById('mynetwork');
 
@@ -130,13 +134,12 @@
             const options = {
                 nodes: {
                     color: {
-                        
-                        border: '#eef0f2'
+                        border: '#bad7f5'
                     },
                     shapeProperties: {
                         useBorderWithImage: true
                     },
-                    borderWidth: 0,
+                    borderWidth: 2,
                     borderWidthSelected: 4
                 },
                 edges: {
@@ -147,12 +150,18 @@
                     font: {
                             color: 'transparent',
                             strokeWidth: 0 
+                    },
+                    color: {
+                        color: "#fff",
+                        highlight: "#fff",
+                        hover: "#fff"
                     }
                 }
             };
 
             // Initialize the network
             var network = new vis.Network(container, data, options);
+            calculateWeights(nodes.get(0).id);
 
             // Node clicked behavior
             network.on("selectNode", function (params) {
@@ -176,7 +185,7 @@
                     movieInfo.classList.remove("active");
 
                     fetch("/moreinfo/"+clickedNodeData.json['id'])
-                    .then(response => response.json()) // Parse JSON response
+                    .then(response => response.json()) 
                     .then(data => {
                         console.log(data); // Access data from Python
 
@@ -213,12 +222,49 @@
                         movieIMDB.innerHTML = "<b><a href='"+data["imdb"]+"' target='_blank'>IMDB</a></b>";
 
                         likeButton = document.getElementById("likeButton");
+                        likeLabel = document.querySelector('label[for="likeButton"]')
+                        likeLabel.style.display = "";
+                        likeLabel.textContent = "Like";
+                        likeLabel.style.cursor= "pointer";
+                        likeButton.disabled = false;
                         likeButton.dataset.id = clickedNodeData.json["id"];
                         likeButton.dataset.nodeId = nodeId;
 
+                        neutralButton = document.getElementById("neutralButton");
+                        document.querySelector('label[for="neutralButton"]').style.display = "";
+
                         dislikeButton = document.getElementById("dislikeButton");
+                        dislikeLabel=document.querySelector('label[for="dislikeButton"]')
+                        dislikeLabel.style.display = "";
+                        dislikeLabel.textContent = "Dislike";
+                        dislikeLabel.style.cursor= "pointer";
+                        dislikeLabel.disabled = false;
                         dislikeButton.dataset.id = clickedNodeData.json["id"];
                         dislikeButton.dataset.nodeId = nodeId;
+                        likeButton.checked = clickedNodeData.rating === "like";
+                        dislikeButton.checked = clickedNodeData.rating === "dislike";
+                        neutralButton.checked = clickedNodeData.rating === "neutral";
+
+                        if(likeButton.checked==true){
+                            document.querySelector('label[for="neutralButton"]').style.display = "none";
+                            document.querySelector('label[for="dislikeButton"]').style.display = "none";
+
+                            likeButton.disabled = true;
+                            likeLabel = document.querySelector('label[for="likeButton"]');
+                            likeLabel.textContent = "You liked this movie";
+                            likeLabel.style.cursor= "not-allowed";
+
+                        }else if (dislikeButton.checked==true){
+                            document.querySelector('label[for="neutralButton"]').style.display = "none";
+                            document.querySelector('label[for="likeButton"]').style.display = "none";
+
+                            dislikeButton.disabled = true;
+                            dislikeLabel = document.querySelector('label[for="dislikeButton"]');
+                            dislikeLabel.textContent = "You disliked this movie";
+                            dislikeLabel.style.cursor= "not-allowed";
+                        }else{
+                            neutralButton.checked=true;
+                        }
                     })
                     .catch(error => console.error('Error:', error));
                 }
@@ -249,20 +295,28 @@
             likeButton = document.getElementById('likeButton');
 
             likeButton.addEventListener('click', function() {
+                nodes.get(Number.parseInt(likeButton.dataset.nodeId)).rating="like"
+                network.unselectAll();
+
                 network.fit({ animation: { duration: 500 } });
                 movieInfo.classList.remove("active");
+
+                nodes.update({
+                    id: Number.parseInt(likeButton.dataset.nodeId),
+                    borderWidth: 2,
+                    color: {
+                        border: '#008000',
+                        highlight:{
+                            border: '#008000'
+                        }
+                    }
+                });
 
                 fetch("/more_recommendations/"+likeButton.dataset.id)
                     .then(response => response.json()) 
                     .then(data => {
                         for(var i=1; i<data.length; i++){
                             newTitle = data[i]["title"] +" ("+data[i]["release_date"].substring(0,4)+")";
-
-                            // check if movie is on blacklist
-
-                            if(blacklist.includes(data[i]["id"])){
-                                continue;
-                            }
 
                             // check if node already exists
                             var nodeExists = nodes.get({
@@ -281,13 +335,13 @@
                                 });
 
                                 if(edgeExists.length==0){
+                                    const edgeId = makeEdgeId(likeButton.dataset.nodeId, nodeExists[0].id);
                                     edges.add({
-                                        id: netEdges+1,
+                                        id: edgeId,
                                         from: likeButton.dataset.nodeId,
                                         to: nodeExists[0].id,
                                         value: 1
                                     })
-                                    netEdges++;
                                 }
                             }else{
                                 nodes.add({ id: netNodes, 
@@ -297,25 +351,37 @@
                                         image: "https://image.tmdb.org/t/p/original"+ data[i]["poster_path"]
                                 });
                                 netNodes++;
+                                const edgeId = makeEdgeId(likeButton.dataset.nodeId, netNodes-1);
                                 edges.add({
-                                    id: netEdges+1,
+                                    id: edgeId,
                                     from: likeButton.dataset.nodeId,
                                     to: netNodes-1,
                                     value: 1
                                 })
-                                netEdges++;
                             }
                         }
+                calculateWeights(Number.parseInt(likeButton.dataset.nodeId));
                 });
             });
 
             dislikeButton = document.getElementById('dislikeButton');
             dislikeButton.addEventListener('click', function() {
-                blacklist.push(Number.parseInt(dislikeButton.dataset.id));
-                nodes.remove({id: Number.parseInt(dislikeButton.dataset.nodeId)});
-
+                nodes.get(Number.parseInt(dislikeButton.dataset.nodeId)).rating="dislike"
                 network.fit({ animation: { duration: 500 } });
                 movieInfo.classList.remove("active");
+                network.unselectAll();
+
+                nodes.update({
+                    id: Number.parseInt(dislikeButton.dataset.nodeId),
+                    borderWidth: 2,
+                    color: {
+                        border: '#FF0000',
+                        highlight:{
+                            border: '#FF0000'
+                        }
+                    }
+                });
+                //nodes.remove({id: Number.parseInt(dislikeButton.dataset.nodeId)});
             });
 
             function populate_people(group, data){
@@ -344,6 +410,37 @@
                     group.appendChild(person);
                 }
                 return group;
+            }
+            function makeEdgeId(a, b) {
+                return [Number(a), Number(b)].sort((x, y) => x - y).join("-");
+            }
+
+            function calculateWeights(mainNodeId) {
+                const mainId = Number(mainNodeId);
+                const mainNode = nodes.get(mainId);
+
+                if (!mainNode || !mainNode.json) return;
+
+                const connectedNodeIds = network.getConnectedNodes(mainId);
+
+                connectedNodeIds.forEach(nodeId => {
+                    const otherId = Number(nodeId);
+                    const otherNode = nodes.get(otherId);
+
+                    if (!otherNode || !otherNode.json) return;
+
+                    fetch(`/getsimilarity/${mainNode.json["id"]}/${otherNode.json["id"]}`)
+                        .then(r => r.json())
+                        .then(data => {
+                            const edgeId = makeEdgeId(mainId, otherId);
+
+                            edges.update({
+                                id: edgeId,
+                                label: Math.round(data * 100) + "%"
+                            });
+                        })
+                        .catch(err => console.error("Similarity error:", err));
+                });
             }
         </script>
     </body>

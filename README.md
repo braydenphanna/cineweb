@@ -1,5 +1,5 @@
 # &#x1F578;&#xFE0E; CineWeb
-A web-based application that employs graph data structures to generate a web of movie recommendations based on your last watch.
+A web-based application that employs a graph data structure to generate a web of movie recommendations based on your last watch.
 ## Demo
 [Click here](https://cineweb.pythonanywhere.com) to try the web demo.
 ## Usage
@@ -19,10 +19,10 @@ python3 ./server.py
 - [x] Make a movie class (include most of the attributes that the json includes)
 - [x] Create a function to parse each movie entry in the outputted json file into individual movie objects
 - [X] Create a simple algorithm to rank the movies using and put them in a weighted graph
-- [ ] Create a more complex algorithm to rank the movies using and put them in a weighted graph (based on info such as: genre crossover, director, and lead actors)
-- [ ] Create a rating System for each movie?
-- [ ] Create a watched list
-- [ ] Create a like/ dislike system for each watched movie?
+- [X] Create a more complex algorithm to rank the movies using and put them in a weighted graph (based on info such as: genre crossover, director, and lead actors)
+- [X] Create a like/ dislike system
+- [X] Spawn new recommendations based on likes
+
 
 ### User Interface
 - [x] Basic flask setup with working connectivity
@@ -33,7 +33,8 @@ python3 ./server.py
 - [X] Give graph labeled edges (denoting similarity)
 - [X] Add option to input API key on the website
 - [X] Make everyting look more appealing (change colors, fonts, etc.)
-- [ ] Offer suggested searches while entering your starting movie
+- [X] Offer suggested searches while entering your starting movie
+- [ ] Refine UI for all screen sizes
 
 ## Tech Stack
 ### Frontend
